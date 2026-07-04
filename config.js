@@ -124,3 +124,8 @@ create policy "Dashboard can update referrals"
 
 -- No DELETE policy is defined on purpose: the dashboard never deletes rows.
 -- Manage deletions from the Supabase Table editor if ever needed.
+  window.CHT_CONFIG = {
+    
+  SUPABASE_URL: 'https://eeejjoxwheydrrwdasph.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_lYqknXA6GFgMEZWRGEinkA_SEI1norq',
+};
