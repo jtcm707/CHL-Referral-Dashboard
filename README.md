@@ -1,186 +1,49 @@
-/* =========================================================================
-   db.js — the ONLY place that talks to Supabase.
-   -------------------------------------------------------------------------
-   Every database read/write for the dashboard goes through a function here.
-   Pages (dashboard.js, contact.js) never call Supabase directly. That keeps
-   data access in one testable place and makes adding Authentication later a
-   small, contained change (see the AUTH section at the bottom).
+# Christian Hearing & Tinnitus — Referral Dashboard
 
-   Exposes a global `DB` object:
-     DB.ready                         -> boolean, is Supabase configured?
-     DB.STATUSES                      -> the list of valid status values
-     DB.generateReferralId(dateStr)   -> "CHT-YYYYMMDD-XXXXX"
-     DB.fetchReferrals()              -> Promise<referral[]>  (newest first)
-     DB.fetchReferralById(id)         -> Promise<referral|null>
-     DB.updateStatus(id, status)      -> Promise<referral>
-     DB.updateNotes(id, notes)        -> Promise<referral>
-     DB.updateSaleVerified(id, bool)  -> Promise<referral>
-     DB.backfillReferralCode(id,code) -> Promise<referral>
-   All functions throw on error; callers use try/catch.
-   ========================================================================= */
-(function () {
-  'use strict';
+Everything is in ONE file: **index.html**. It contains the whole dashboard —
+styling, logo, the referral table, the contact page, all logic, and your
+Supabase keys. There are no other files to load, so nothing can get out of sync.
 
-  var CONFIG = window.CHT_CONFIG || {};
+## What's in this zip
+- `index.html` — the entire dashboard (this is all the website needs)
+- `supabase/dashboard-migration.sql` — run once in Supabase (see below)
+- `README.md` — this file
 
-  var READY =
-    !!CONFIG.SUPABASE_URL &&
-    !!CONFIG.SUPABASE_ANON_KEY &&
-    CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL' &&
-    CONFIG.SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+You can safely DELETE these old files from your repo if they're still there:
+`dashboard.html`, `contact.html`, `styles.css`, `config.js`, `db.js`,
+`script.js`, `dashboard.js`, `contact.js`, and the `assets/` folder. The single
+`index.html` replaces all of them.
 
-  // The global `supabase` comes from the CDN script loaded in each HTML page.
-  var client =
-    READY && window.supabase
-      ? window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
-      : null;
+## Deploy (do this exactly)
+1. In your GitHub repo, open the current `index.html` and DELETE it
+   (trash icon → Commit changes). This clears the old, broken file.
+2. Click **Add file → Upload files**.
+3. Drag in **only** the new `index.html` from this zip. Do not open it, do not
+   copy-paste its contents.
+4. At the commit step, choose **"Commit directly to the main branch"**
+   (NOT "Create a new branch"). Commit.
+5. In Cloudflare → your Pages project → **Deployments**, confirm a NEW
+   deployment appears. When it says Success, open your site and hard-refresh
+   (Ctrl+Shift+R / Cmd+Shift+R).
 
-  if (!READY) {
-    console.warn(
-      'Supabase is not configured. Fill in config.js with your project URL ' +
-        'and publishable key. The dashboard cannot load data until then.'
-    );
-  }
+The one rule that keeps this working: upload the real file by dragging it —
+never hand-create a file and paste code into it.
 
-  var STATUSES = [
-    'New',
-    'Contacted',
-    'Appointment Booked',
-    'Sale Completed',
-    'Invalid',
-    'Closed',
-  ];
+## Database (one-time)
+If the dashboard loads but says the table isn't set up, or shows no data:
+1. Supabase → **SQL Editor → New query**.
+2. Paste all of `supabase/dashboard-migration.sql`, click **Run**.
+3. Make sure you run it on the SAME project whose keys are in `index.html`
+   (project ref `eeejjoxwheydrrwdasph`) and the same project your landing page
+   saves to.
 
-  var TABLE = 'referrals';
+## Email template
+The contact page's "Send email" uses your referral-confirmation script. The
+recipient's name fills in after "Dear", and the referral's ID fills in on the
+"Your Referral ID:" line — both automatically. Staff can edit any of it before
+sending, and "Reset to template" restores it.
 
-  // ---- Referral ID -------------------------------------------------------
-  // Format: CHT-YYYYMMDD-XXXXX  (matches the database trigger). The database
-  // assigns codes automatically on insert; this JS version is only used to
-  // backfill any legacy row that somehow still lacks one.
-  var ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L
-
-  function suffix(len) {
-    var out = '';
-    for (var i = 0; i < len; i++) {
-      out += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
-    }
-    return out;
-  }
-
-  function generateReferralId(isoDate) {
-    var d = isoDate ? new Date(isoDate) : new Date();
-    if (isNaN(d.getTime())) d = new Date();
-    var y = d.getFullYear();
-    var m = String(d.getMonth() + 1).padStart(2, '0');
-    var day = String(d.getDate()).padStart(2, '0');
-    return 'CHT-' + y + m + day + '-' + suffix(5);
-  }
-
-  // ---- Helpers -----------------------------------------------------------
-  function assertReady() {
-    if (!client) {
-      throw new Error(
-        'Supabase is not configured. Check config.js (project URL + publishable key).'
-      );
-    }
-  }
-
-  function throwIf(error, context) {
-    if (error) {
-      console.error(context + ':', error);
-      var e = new Error(error.message || 'Database error');
-      e.code = error.code;
-      e.original = error;
-      throw e;
-    }
-  }
-
-  // ---- Reads -------------------------------------------------------------
-  async function fetchReferrals() {
-    assertReady();
-    var res = await client
-      .from(TABLE)
-      .select('*')
-      .order('created_at', { ascending: false }); // newest first
-    throwIf(res.error, 'fetchReferrals');
-    return res.data || [];
-  }
-
-  async function fetchReferralById(id) {
-    assertReady();
-    var res = await client.from(TABLE).select('*').eq('id', id).maybeSingle();
-    throwIf(res.error, 'fetchReferralById');
-    return res.data || null;
-  }
-
-  // ---- Writes ------------------------------------------------------------
-  async function updateFields(id, fields) {
-    assertReady();
-    var res = await client
-      .from(TABLE)
-      .update(fields)
-      .eq('id', id)
-      .select()
-      .single();
-    throwIf(res.error, 'update ' + Object.keys(fields).join(','));
-    return res.data;
-  }
-
-  function updateStatus(id, status) {
-    if (STATUSES.indexOf(status) === -1) {
-      return Promise.reject(new Error('Invalid status: ' + status));
-    }
-    return updateFields(id, { status: status });
-  }
-
-  function updateNotes(id, notes) {
-    return updateFields(id, { notes: notes });
-  }
-
-  function updateSaleVerified(id, verified) {
-    return updateFields(id, { sale_verified: !!verified });
-  }
-
-  function backfillReferralCode(id, code) {
-    return updateFields(id, { referral_code: code });
-  }
-
-  // ---- Public surface ----------------------------------------------------
-  window.DB = {
-    ready: READY,
-    STATUSES: STATUSES,
-    generateReferralId: generateReferralId,
-    fetchReferrals: fetchReferrals,
-    fetchReferralById: fetchReferralById,
-    updateStatus: updateStatus,
-    updateNotes: updateNotes,
-    updateSaleVerified: updateSaleVerified,
-    backfillReferralCode: backfillReferralCode,
-  };
-
-  /* -----------------------------------------------------------------------
-     AUTH — how to lock this down later (no page changes needed)
-     -----------------------------------------------------------------------
-     1. In the Supabase dashboard, enable an auth provider (email is simplest)
-        and create a login account for each staff member.
-     2. Change the two RLS policies in supabase/dashboard-migration.sql from
-          to anon, authenticated
-        to
-          to authenticated
-        and re-run that file.
-     3. Add a sign-in gate. A skeleton lives in index.html. The helpers below
-        are already here so the rest of the app keeps working unchanged:
-
-          DB.getCurrentUser = async function () {
-            var r = await client.auth.getUser();
-            return r.data ? r.data.user : null;
-          };
-          DB.signIn = function (email, password) {
-            return client.auth.signInWithPassword({ email: email, password: password });
-          };
-          DB.signOut = function () { return client.auth.signOut(); };
-
-     Because every query already runs through db.js, you only wire auth in one
-     place — no changes to dashboard.js or contact.js.
-     --------------------------------------------------------------------- */
-})();
+## Keys
+Your Supabase URL and publishable key are already in `index.html` near the
+bottom, inside `window.CHT_CONFIG`. Both are public and safe in browser code.
+Never add the service_role (secret) key.
