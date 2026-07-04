@@ -17,6 +17,6 @@
    project reference.
    ========================================================================= */
 window.CHT_CONFIG = {
-  SUPABASE_URL: 'https://rbtdoikfaouxhleimakd.supabase.co',
-  SUPABASE_ANON_KEY: 'sb_publishable_GOjkF69Y3R4TPLL1JtdwZA_qaCrcS1u',
+  SUPABASE_URL: 'https://eeejjoxwheydrrwdasph.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_lYqknXA6GFgMEZWRGEinkA_SEI1norq',
 };
