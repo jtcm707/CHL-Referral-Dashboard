@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Referral Dashboard | Christian Hearing &amp; Tinnitus</title>
+  <title>Contact Referral | Christian Hearing &amp; Tinnitus</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -563,6 +563,43 @@ tr.row-clickable { cursor: pointer; }
   flex-wrap: wrap;
 }
 
+/* Email editor */
+.email-field { margin-bottom: var(--space-2); }
+.email-field label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.email-field .select { width: 100%; }
+.input {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--gray-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(11,60,109,0.12);
+  background: var(--white);
+}
+.email-field .notes-area { min-height: 150px; }
+.email-hint {
+  margin: 0 0 var(--space-2);
+  font-size: 0.8rem;
+  color: var(--green);
+  background: var(--green-soft);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+}
+.btn-split { display: flex; gap: var(--space-2); }
+.btn-split .btn { flex: 1; justify-content: center; }
+
 /* ---------- Footer ------------------------------------------------------- */
 .foot {
   border-top: 1px solid var(--border);
@@ -598,7 +635,6 @@ tr.row-clickable { cursor: pointer; }
   <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAA+SUlEQVR4nO2dd5hU5fm/7/c9Z/r2hV16L1KkCwrIqoBiw7rGHmvsNf1nFFETYy+xRKOxxQZ+NSooKlJEqiC991522Tr9lPf3xzkzLGoSVDQuOfd1eYHL7szszOc853mfKvhhEJSN0ZiODWPtzBdzht7QFOHvpqTVG5vDUXZXEC2UUEVCqXxA+4Fej8cPiVK2krJWIKpB7USxFk0uwWaxkvqK+PQHdzX4blcbd1og1MF+KeKgP155uWT8eCvzhdzht3axTXE8tjUS1ACgOVITAlBKgbIBBeqg/24ePyZCAAKERAhHVsq2ULBbIBYg5Kdo9kexqY8uz/5MebnG+HH2wRT2wRL0fkLOL7upwLC106XgAqWsoULzB1E2yjYdAStlN/hJ4b6Mg31xefy4uKJUKvM3hJAIiZA6CImy0gZSzrGF9qpm+t6Ofn5vBeAKe7y97zG+O99fRM6LsQAig24sFQH9aqXsy4Smt0HZKMsApSzn6kUelOf0aEwoFDYoEEITmg+ExLbM3QL5omX7nkrOvG8LsJ+WvivfR1z7rHLZz4Nhim6QtroVTW+mLANsyxOxx1dRjp+JQmqa0Hwo26xCySf8Ad/D1ZPvq2XMGMnYO9V3dUO+o9DGyMxhLzzslpNQ6s9S8x2urLQjZIF0nSoPj3+FQikbKTWhBVCWsQ7kH2IzHn4T+M7W+tuLzn2i0pG/jMRS9n0IcR1KoSzDE7LHd8ERtqZrQmjYyvqHnhY31c15pOq7iPrbia9sjM70sWak7MaeKP0FIbUBykg4Bzwh5Ld6LA+P/VA2CiV8QU3Z1mopuKR++iNzMpo70Ec5cEGXlelMn26Ghtx8qtTkiwKKlJU2EUL/Tq/fw+ObUMpE8+kgEgrr6vhnj71M+TiN8eccUBTkwKxq2Rid6dPN8NE3XCE18S7KKlJW2vLE7HHQEULHMmxsIySF/lJk2K23Mv4ci7KyA0q6/WcL7Vrm8NE3XyGk/BuW4YRg8FwMjx8SpUAooQeksMxf18949MGMFv/dT/17UWbFfOPlQmoZMQtPzB4/PE7qURkpS2n6A5Fht/yS6dNNysb8W6/gX1to94QZPvrmk4UQ72GbuGL2ohgePyYKsIUe0GwrfUl8xuMv/bvox78QpxNnzhl2UzeltFlg5aMs5Vlmj/8OjvuB1EyJOqb+s8dm/ytRf5OgBWPGCBbsDEZqwzOFlH2UmbYQwquE8/jvoZQtNF0qpTZIf2hg/af3Vjn/sH9G8esWt7xcMnasHa4L3S80Xx9lpk1PzB7/dYSQyjItofk6WKnE0yAU5ed8Tb/7W+h9fvPxUsqPlJnJ/nm1GB4/EZQyhS+oKzt9Qeyzx1/7quvRUKgCxgjK8Iet6i+F1LphGbaXAfT4aaFshCaAHdJv9q7/tEk1jHUKnmjocpSXSxhrh+3a66Ue6IZlWJ6YPX56CIlt2ULzt7RT2m9hrO1o1/1X5w8lQJAz9IYmtpDLBTRxOkk8V8PjJ4kT9RAiYfpFr9Snj26EMQLG2o6yy8dL55vkNVLzN8W2bDwxe/x0ESjbFpovoqXUrYCifEW27UkAqmjUDXmpqFiBlC2wrcy/eXj8VFEIgVLUKdvqnpj15A4YIyVlYzSAZEyeKXR/SyxD4YnZ46ePwLZtqQfyhea/AIAypHRGDQCon6NsBdJrv/ZoLAhsU6Gsi9y6aUvCWDt32I2dBeIoZRkC4c3G8GgkCCGVbSKk7Bmy6/oBSgLYQo4Smj/gdGd7eDQilLKE9Amp7FMgE4e21Uhn0IvnOns0NoTAscPDASFyh19XbKf0JQjRwqmo81Tt0ahQTkmzqNN8vn5SpWRPoNRVuSdmj8aGAFshZZ5tpvtIpWm9hKZp+43n8vBoTCiUEAKF1lfalurlfPXgT4L08PhxEEoBNmZvKbG7KLcf8b/9sjw8vhNCSWwbqUQnCbKFO8rWE7RHI0UANgrVTCphF4GN1/zq0YgRKIWAfCls8r1h4x6HCEJ6qW6PQwmvI8XjkMITtMchhSdoj0MKT9AehxSeoD0OKTxBexxSeIL2OKTwBO1xSOEJ2uOQwhO0xyGFJ2iPQwpP0B6HFJ6gfyCUAikEmpQIrzL3R8PbM/gDIIRAk5BMmximRcCvo0nPdvwYeO/yD4AQYFo2Zw3vy3O3X0Tfrq1JG5ZnqX8EPEEfRLKCVWDbijOO7ctlo4dwRPd2GIaJ9AT9g+MJ+iDR0PoqQEpB0OfDsmzX3VBe1+aPQKP1oYUQCOFYwh8DKfdZX4Rz4JNSYtu28yWBs/RACKQU2EKQTBtomqQ4P4ImBJoUKCWQQiCEwLJtd+6P+/fM78W+pwJQ37NFTgiBFGArle22k0KgDsJj/9RoxIIGgSPqH+NDUZmBU9k58WCYJgJHjIZpZQUohUAplW07ThsmViJF3O/DtCxA4Nc1TMtC1zTCQT922s7+fEbRwn3e74vAvYO4DybcC0oAlifo/z6Z27vih/8whCtO5Vq3zAXkfB1alhSQEw5g2bajQyFAgd+n0bxJAbat6NKuGUMHdScSCWLbNraCZMrAtGz21kaprIm66nWeM6Oxg+WhKBS22v/iyFyYmpRYdnaJVKNHRIbe0Kh+k4yroZTCttUPGjlQCtKmSdCvNxDzPjH4dMmUv/6SPl1aYVpW1vJlLHQsmcYwLPJyQmjym1/n8+/O5Jp7XyUU8GfdjszvaVk2lm3j17XvJbfM67IbuDVOfNxx2Wz3gj0UaFQWWpPCucUrha5r+DSNeDKNrkmUYj9BfFukdCyu86dCkxJd0+haWsLarRX49MzkYcfUCSEwTJuXJsxmS/8uGJaddTOkcA6Bfbu2plVpERu2VTB36QaEK2ohBJomCQf8TJ67Ek1zxCUbiN4wLfIiIYrzw2zZVb2fD/9tfd9v+l5b2QgFmqYhlA1KYFp2NhJjN1KBNypBKxwhxOMpurVvxYlH9eC+lz9G1yT295w1mXGNM9YYBSnT5LLThrK3Nsqdz7xPm+ZFpNMWlq0wLRNLKf7yxhSeHj8Ny1aZ8yJSOlb6/x64mnYtmvDapHnc+fj/EcgLY1nOg2uaROAcIEN+n2PZlcJSynFfhODFOy/h/6Z8yZots8nPCTrvgXIEapjffTa9rkkEEE2mOXnIYZQU5fHcP2eQGw5i2XajHtPSqMJ2tm0jhGOJe3VuxbknHIFP17DVwXA9BBJBXTSJZdukTBPTtHnglY8ZfsRh3HrBSKpq4wAo5XzoPinJCQcIBf3kRYLkRQLkhgPk54RQwPaKGgD8Ph0tHCQvEiI3EiQ3EiI/J0Qk5CcU8Dm3fOclIIBUyuTlsZewZede/jFxDnk5QQSCRNIgbZiuqL/Nb8bX3h8hBUbKoG/XNpSP6IdA4NP1Rp/8aVSChszJX9GhZRM6tS6ha9tS0mnze34QjptRWpxH/+5tqYsmUEoRCvjYWxPlzF//lQHd2zJ6WC8qqusxTBvLsjFdayaEwFYK07IxbeVaOUUikQacaIhlWaRNi7RhkjZMUmkT23YsbTb8pyCaSHHXNaOpqotz88PjyI0E0YRgb22Unh1b0L5FE9KmuZ978p9/PeFGaJyfsSwb07Tx+XWO6NGOds2bUFyQg2majvv2Pd7J/zaNStBCCEz3IBgK+PDpGmcd1w9Nk4T8PqQQ+HQt+72ZP79mndxYsZQCXUp0XWJaNnmREC/c8XPuufZ0kmmTlGGSGw6STBvccP/rHHfEYYwu600skSIY8IECn09z48sq6w6YliN4n6/Ba1H7+7KGaWNYdvbwp2saiWSaP1x+MmnD5No/v0bQ7yOVNqiqjfHbS0bxwp0/p2lhDlIIAj4dKeW/PGx+DTd7KaVA0yWGZdGzU0uG9u5IyjDx6xqGmwQK+vVGO+mw0Qg6Ez2QQqBsm2gijVKKa84extA+nYin0vh8Grbt+KcZ8aiMQ9wApRQ+XXMyeNK5CEIBHys27uD8PzzHkN4deeNPV5AbDlATjVOUFyFtWtz68HiO6tWB8hH9qayuJ+DXsW1F2jCzh6hMiE8I0N2LK/PsDTUiXPfCtGw0KaiLJzn/xEEkU2nu/ttEivNzqIslKCnK48U7L2Fgj3acf9vzzFqygYBfd/10533x6/95mpuUOO+L7ZwqkymDG352LLmRILv31hFzD9e2rRDO7MNGSaMQtFJkLa9zoNJYvWkXadPCp2vcc+1p+HWNRMrAr2vobslm5rb81Q9HCIFp2tnHq6mLYytFOOhn5YZdjLrhcZau3c6bf/4FIwd1Y/O2CnyaRijo494XJtG7SyvOGt6Pupjjb9tuCHG/1+w+sWXbX/s3KQS6JrOuQCyZZmjvjkgBT4ybRpPCHCpr6hk5qDvP/uEiZixax/m3Pc/6bRXkRYKYpk1Fdb0TPxbCjSPv+90yd59MRlKTAtsGnybx+3Rq6uNccupgzjv+CCzbZtOOSmrq4o6vLx3rnXGlpPz6He6nTKMQtBSORSnIC1GYG0HXJXOWbmD33josW9G3axue/v0F5IaD1MYS2ErtVwiU+WvG/VDKufWapk1pUR5H9epANJ6isiaGrkvCQT93PzeRu56dwIUnHsmd15yGkILaaAKl4JHXJtOpTQk9OrTAMJxs3364tdC27YT/auvjsC9Rl70AMvHs447oSm4kyNtTFyGAtGFx3TnHcOmpg/nDU+/y4vuzyIsE0TVJRVUdAb/OVWceTcuSAtKGia7L/ax/NmMphXuIdu4ami6pqosztE8nHrjxzGwqfOqC1UjpfH+r0kIsN3wn3RR/I9JzIxG0lCRSaY7p14Xrzz0W07TZtqeG5975nHDQR10sQfmI/rzxpyvo0qaU2mgSTZP4dI2g34euafsdojLJEakJCnJCPPHb83jr/qs4cUhP4sk0lTVRSopzmbFoHVff+yoBv85ff38+R3RvR01tlJr6BM++PYO0YZIbCQICIRt88AJ0TWPc5AU88MrHfDh7OaFQAIRzIQnXgpqWTfMmzjTjzxasJZFK07VdMx665WxCgQDX/PlVlqzdRn5OiIq9dQT9Pm46fwRvP3A1JxzVE8Ow0NzHyYQMhXDi9Q0Pd36fjs+nUR9LMvLIbvzj7ssI+HV0XWPlxp1MX7AGhKBHhxZcdtpg4sk0Qmbi3T/qR/29aRSZQk1K6qIJfnvJKG6/4iTKfvEQi9ZspTg/h7fuv4qj+3SisiZKYW6YrburuOOZ9xn3yXx0XScc8GGYlvOhNwjvCSAYcKrhmhblcuaxfTlxcA8qa6K8M20RE2csoao2RjgcIJ5IM2JQNy466Ug2bq/ksdc/pSaWoGlBLihIpA33lSqc3I6T+EkbTugvGNCRYv9YuRACoUBIqI+lCPh1Lhs9hK7tSnlr8pfMXLwOTZNYlqJt8yJOO6YPJxzZnW17qnntw3nMXLLedV00J2uq9ln8zEFR4VjYtOFEgX5x5tHc+YtTCQf9mJaFZSkuHvN3Ppi5jGTK4IU7L6FHh+Yce9XD2fdd8XV36qdM4xF0PMm1Z5fx5G/PY/K8VVw29iV2VNYwsEd7Xvvj5bRrXkxVXYxQwIdf13n2nRk8MW4aa7fsJhTwu9Yqc3DLVMs5KeBU2iCRNsjPCXHS4J6MGNSN1qWFTF2whlcmzmHr7mqUUhTmhbnk1MH06tSKf3w4h6nzV1OQE8aynagGDar/An4nZ6VrkrRhYduqQe2JQNecg5dtK0qLcrn1wpHsrY3x6GufUl0fw6dptG9ZzMUnH0XvLq1ZsnYb//hwLsvWbcfv1wn6fUgElnIq9hrG4h0rLTFMi0TKoGOrJvzputM549i+JFIG8USakqJcxv5tAvc8NxHLVlx88pE8f8fFzFy8njN/9TRp00KTMmsIGguNQtBSSmKJFOXD+/HS2Evx+zQmz1vJdfe9wdotu+nbtQ3P3nYBA7q3o6o2hpSS/EiQnXvrGD95Pk+/NZ3Vm3dnfehQwIffDakZpkUo4Aegpj6BkUwh/TrD+nbm9GP70rVNKV+s2MTEz5eyfMNOontrGXjEYdx83nCmLVjN21MXkUobWTcmU1+iSYkU+/zZrxYAZcTXJD+HkUd2Y/WmXUybuZxAboienVpy9vD+tC4tZNqC1cxYuI4tu6pQOBGVSCiArjmC3Vc7AinDdMpRpcAwTJo1yeP8UYO4/pxjaNOsiOr6OH5dIxIK8OKE2dx4/xtYts25xx/Bg7ecTWFumL+8OYWbHhxHUV4Ey7Y9Qf8QOHUTFi1LCpj85C00b5qHT9dYtm4Hf3j6XSZMXUSz0kKev+NiThrSE8O0qKqNEQkFyAkH2Lq7ijc+ms+0BWswTIv5KzeTSKUpyAmTShu0Ki3knmtPY9Wm3fxz6kIWr9tOvKoelKJLt7acXtabQYe3Z9OOvXwyZwWfuPUXZf06s7c2xprNe5waEPbVG/syITDXt9akJJk2EK6bAArTtImEAtRG4yTiKYb078KIgd0oLcpl+pdrmDp/DXt2V4GU+IN+OrRsyqjBPRg9rBf/nLaIZ9/5nIKcEPWJJLF4ik6tS7LRjVOP7sXPTzmKHh1bkEqb1MeT5OeEsJXisdc/5bePvEWLZkU8dPPZnHvCEdTHU0RCfn5xzz94/t3PKcyLOHcdyLo0jYFGIWgAv64RTxk8cNNZ3PCzY6muixMJ+TFNmzc/mc/Dr05m9eZdXDp6CHf+4hSaN8mnPp5ykwaSvEiIlOE0rc5dtpEn3pzGp/NWkkil0XWNob07cc7I/nRqXUJ9PMnMxeuZOn8NS9ZuI1UTxZcfYfiArgzu3ZFEymDZ+h3MXLQOKSVSClKGiWXZ2YOhJmXWaqfcQv/s4VThFiQ5tdRd2pRy3ICu+Hwac5ZuZNr81STr4wRyQrRtUUz/w9pw0pDDad40ny27qvhw5jIWrtrK7qo64qk0pUV5jB7Wm+t/dgwgyM8J0qqkEFspN+sJhXlhdlfVccXdLzPhsyWUjxzAby4+gQHd21IXSwCCaDzFMVc9yI6K2my9tCadLKjVSPzoRiPoTLljs+I8Pnz8Rto0L6amPk7Apzsp6toYny1cy1NvTaeyup6LTjqSn596FCWFuaQNk2jcye75dI312yqorIkS8PuYNGsZ7322hPlL1kMyTVHLJgzt04nBh3ekbfMi0qbJvOWb+XzxOlZt3EWqPk6nTi0Z3KsDe2tjzF660Qkrps1sONCJYChisQRNC/MobZKHYVps3F6JZduEg36Cfh+mZdO3a2taNi1g4eqtLFu+EREK0L19c47o0Y7uHZpTUpjL7qp6vly1hdlLNrBrby3peAqkoEObUs4c3perzxzGnqo6Sovzad+iCfFkmmTaIODXCfgcX/6lCbP5098/pHVpIf/vspM47oiu+HSNumiCpGFQUpjHXX+byN3PTSQ/J5S9mzSsB28MNBpB+3SNgE+nuj7O6GG9efWeywGIp1JOJMHvIyccIJk2mLV4Pc+8PYOq2hhl/btw7vFH0Kl1UwCi8RS10TjP/vNz1m+t4OqzhtGpVVNWbtrF21MW8v5ni9m8dQ8k0gSa5HNE97b0O6wNXduWEk+mWbxmG3OWbWT7nhr8Pp2AXyNtWFiWk2DRdSeF3bQwl5vOPY5h/TpjWhaGaVNTH+fFCbOZMGMpueGAW6GnMAyL0qI8zjquLy1LC/HrGht3VLJ03XYWrdlGXTSBbStM0yQvJ0zPji248oyhnDz0cKrq4vzx7x/QoUUTfnXx8dlZIAG/TjJtMGnWch5/YwrxZJrLTxvK5acPAQXxZDrbZVOUF2bK/NWc87tnHb+cfbHrxkajEnQm81VdH+fMY/vw/B0/Jy8SJJZIY5iOOxEM+MgNO6WWX67awrhPFrB03Xa6ti3llKMPZ0jvTtkIxHX3vc5T46dR1q8LF518JGX9uuDTJSs27uTDmcv5aM5y1mzaDaZJJDdCuxbFtCotpCgvTEV1lLnLN2bDcZmKtlTapG3zIv7vgavZUVHL9C9XkxsOYVk2hXlhThzckxfen8Vdf32PcE6QnJDTxXLqsN6EAjqzl2xk1aZdJFNpNF1D1yQpw6R5cT4nHNWdS08dzOGdWrJ+WwUvvD+b59/9nFvOG8Hd147OlqPu2lvHpFnLee2juaAE5SP7c/4JRxAJBYglUtnsZSjgI+D3sXD1Vs789V/ZWVlLXiSIUip7x2lsNApBK5xDFsJJItx26Yms3ryLxWu2cdc1oznxqJ7ouiQaT7lZOBu/TyccdKIXldVRPv1iFZNmL8e0bAb2aMfQPp3o27U1k+et4qI7/s6uHXspbVbEwJ7tGTHwMAb1bE+LJgUsWLWZh1+bzKxF6xFumE93kzamta9STpNatmF20uM3smzDDtZs3sU15WUsXbuDLm1LkELy6OuTufFnx/HhrGU8/sZUquvjBP26YzHdDF3Qr6NrGtX1cVqVFHDJqYM5f9RAckIBJs1ZzhuTvmDyvJXomsZLd13K+SccgWlZLFqzjQkzljJ32QaaFefzs+MHMPyIw/DpGrFECsO0CbiFR0G/j1gixUsT5/DkuKlcecbRvDt9MZ8vXEdBbsjpg2wkfnNDGoWgwcm8CQE19XH++dC1nFbWmxffn81rk+bRpCCHsv6dGTGwGx1bOa6FYVqkTeegpksNv19D15xD16dfrGTRmm3khAIcO6Ar4aCfv70zg+UbdlIbTRCNJcjLDTOwezvKR/Rn1OAezF22kduffo/Nu/YSCQacklC3eg2cO0hVbYxbLxjByEHdeeH9Wbx575X88e8fukmhE9hZWcsXyzexeVcVF4waRFVdjAde/pgPZi4l4PcBTvw6lkiRNiyuP+cYbr1gBHuq6nnm7Rm8P2MJ2/dUAZIhvTty19Wn0rKkgKnz1zBv+UbqY0n6HdaWc084gvYtirGVoj6WzFYSZrpuKqqjTJq1jDc+nk9OKMBvfn4C/bu14YTrH2PGwrWEgn5M08JqhKnCRiPogE/Hp2vsrYtx7dllPPLLc7Asm1TaYO7yzUyYsZiNO/ZSmBtmcK8ODOzRju4dWmSLmhKpNJalEBIiwQBrt+zh6bemUx9LOoc422btlj0sW7/D8UM1QXV9AiNt0K9bW+66ejQDurfj4jv+zuR5K8mLhDDc5EOmgMcwTN59+FpenDCbm88bga4JBlz4R/JyQlxw4iAO7+T0Hv71remMGtKTEQO70a19M475xUNUVNejaxqxZJqivDDP33ExA7u3485nJ/DShNnUxRKEQwGa5ucw6PD2HNGjHXtroiTTBrFEmlOH9WLEwG6E3MxoynA60iMh5y5VF0vw+aL1fPblGpau20FRfoRLTj2KYX0749M11m3dw6gbHmdHZS3hgB/DtLAz/V40nnEHjaYFK2kY2G7R/YsTZjOkTyfOGdGfeCrN8CO6MvyIruzaW8eMhWuZ/uUa3vhkPoU5YQb2bEfPji3p07U1BTmhrBtSlB/Bp2ss37iDgT3akzYs9tbGnEZSIbBsCAV8REJ+lqzdzik3P8FvLj6Bt+67ikvveom3pywkPycEONnAWCLNYe2b4XejCv0Oa82L78/i7OH9OXfUQNo1L6JL21KmzFvFi2MvoaKqnvpYknTapCDXCamlDZP2LYod/3tPDf0v+hObd+4lLxKiKD+CbStywgEO79SSuOsLV1RH6d3ZaUczTOdwmrmIt+2uZsaidSxYuZlde+vw6RrH9OvCZacNoUubUkzTIpU23YKrT9m4Yy85oYDzOG4b2I81JuJg0WgsdCYuKqUgbTpRgTuuPJmLTzrS6TNMpJ2ewIAPAeytjbF2yx5mLV7P8o07iCcNIkE/rZsVMrBHe446vAOFeWGefms6dzzzHntrYpQU5WIYTt1HZphMKm3QvkVTkmmDDeu3c+V5w7nrqlM597bnmL1kA7nhIMotQT17eH/KR/Zn6vzVPPGbc6mui5OXG0ITEsuyiaVShAN+bnrwTV79cC62UrRv0ZSK6nrq40lKi3L5+MmbmTxvJdf8+TVCfj+lRbnURBPYto1lK5oW5tC1bTO27qpib22M/3fpKG449zgsy2ZPdT0LVm5h8dptbNpRSTSeom3zYg7v1IJ+h7XJJl5SaROfz2kyTiQNHnr1E+5/+eNspjMj4IaCbiyabjSCBtD1fQXomiYI+n307dqa80YNZFjfzrQqKcz6tKZlOzXHgGlZ7N5bz/rtFcxfsZnFa7axflsFh3duyXXlZYQCfp4YN5U3P55PZU2USCiAbTtNAGnDpDA/wpWnD+XVD+exauUm/nDDmVx44iCOvephYokUuq5RVV3PbVeeTKuSQjbv2su9151BbTQB4I4i0MkJB3h7ykLO+f3fstEEwzTRNI1kMs27D19L0jA54/rH6dSpJUP7dOKj2cudsKBtk0wbWJYTxz51WC/GXHkKfp/O+MkLWLByC4bpWPv+3drSt2trOrcuoSg/8rX30VaK1Zt2M23Bav45bRErN+6isjbqDr/Zv4AKGpeFbhQuh8LNvNlkJxVFgkFevPNSdlZU8/5nS3hv+mKKC3Jo17yYXp1acVj7ZpQU5hAK+NE1jZYlBbQsKWBY387YtmLx2q3c8cz79L/wTwzs2Y4zj+nL7y4ZxepNu3ln2kKiiRTJtIFP19hVWcuHM5fx5xvO4JaHx3Hf8x9w9nH9uLa8jNufepfSJnkIAS2a5ruWNg8gmxX0+X3ZLu2K6ig+XeJz098Bn86e6nquPONoOrRsyqCL/kSz5kX88drTeeqtaUTjKcJBP1JCcUEBxw04jAHd25JMGdzy8HhmL9nAyCO7cckpg+nRoTmtSgu/9v6l0iYVNfVs2rGXFRt2smrTLnZX1dGsOI8HbjqLVz6Yy8P/+AS/rqG5KfvGJOKGNApBi8x/bpG8rkl2V9exaM0WfnPxCVxw0pHsrqpjw/ZKFq/ZxoezlvHqpLlEgn5aNM2nVWkRHVo2pUXTfMJBP0V5Yfp2bcP7D1/HnKUbGPPM+9z6wBvk5kXo3LZ0v7kXhmmREwowa/F6Fq/Zxkt3XsqIy+/nnr9P5IGbzuaZtz+jPp4iJxKiR/sW/P29Wfzs+AHgPoYzmWhf10pRQcSp5RDObdwwLZo3yefm84bzh7++Rzya4P2/3MAHny9j+herKSzIIZpIUZQXoWeHlixes423Pl1A2rA467h+THriRgZ0awtAMm2wfU8N8WSKrXtqWLdlDzXRODX1CRKpNDnhIG1Kizj3hAG0bVZMaXEeS9dv56UJswkG/Fi2yjYhZ9yNzCfQWATeaFyOTKlnRhim5QwSH3vVaK4+cxiZGuRMcqMmGqeqLsbG7ZUsX7+TPdX17gHI6TnMzwlSnJ9Dr86t6NiqKVt2VfH+Z4t54+P5VNXFss+zz490XsdHT9zElt1VnPe7Z5nz0u95b/pi/vTUPxlyZA+e/v0FXHTH87zz4DW0LikiaRjZhItpWvh9OpW1MYZefj819QnCQR87d1bxx5vPoqxfF4Zd+SATH7uBXZU1XHHPPyjMDbuRFJEdhNO2eRGnlfXhjGP6EAjoLFu3g9Wbd2ErRSptUhtLIoDmTfJp1iSfNs2KaFqQQ9PCXJoURLKD103TZuXmnVx0+wus2rQLn67tJ9qvtl15gj7IZOqXldo30862neLzs4b35Q+Xn0TrkqJsA2nGymY+wIwfWlUXo6Y+QX0syWcL1/DZl2vZsL2SSCiAZTnp6ZpoAtOy9hs1pusyO9brkydvYvzkBUyeu4qX77qU4699hGduc3r/5izdwAeP3UAybZApGNXEvlaogE/jtqfe5cGXPwbgmAFdePmuyzj5pr/w64uPp2lBLqNveRK/m1wxDNPpcBGC4oIcBnRrS3VdjF1VdWhCcuKQnhx3RFeK8iLkRYIU5IYJB/3ZaA4454nMRRXw66QMk/c/W8JtT/2TXZV1SOlMgfqm8lZoPGKGRiRoYL/boC4luCJJpgwKc8P07tKKkYO60bF1Ca1KCmhenE9RfuQ/roTYuruaT+auZPPOvXy5agvzV2wimkg51XI49cU+TUOhiCcM2rYo4oPHbuCXj75FWb8uXHrqYOYs3cCZv/krz/z+Qi46eRDReOprszNSaYNgwMeOijrO/PXTdGzZhCd/dz63PDyePl1bMaxPZ0655cns3L7M4BnlVue1aJrvRCtaldC3a2uG9ulEYV74X/5epmlhuLH6uliSnZW1TFuwhomfL2XRmq0oG/JzQ8STaberpcGgyEYq6EbhQ2doGD4ylJWdRefXdWylGNyrI/m5YXZU1DB/+SZqYk5RjxRO86cUgvycEKGAL2vBBILtFTUYpuWkhy3LHYOwb9acRGBaTiFPMKCzYVsFZ//2GcZceQrvTV/MxM+X8OArn9C2WRGjy3oRS6a/8fX7fc7YgxZN8/noiZvYtrua6+5/nS5tSmnfogmn/fIp4sk0Qb/utGvZOKJ2rWufLq3p1q45RfkRDNNi4eotaJp0ulCS6az/WxtNEk+liSVSSOE0/WYKt4IBH22bFbFo9VY0XRJPprHcA2tD3TYmETekUQm6IQ3f71gyxZA+HRnzi1MA3GlEgpr6OFW1cbZX1LBu6x72VNWzetMuKmtimLbTre1M/bTYvHMvbZsVYxgWsUQ6O1gRyLoOSilMWxEJBVixYSc3PzSOy0YP5uM5K1ixdhtP334R+TkhdlfVkeMWSGV+HnDGFuCMNLv/5Y/5aNYyTivrg8+nccmdL+HTpStmskMZcS8sKQVT5q8ilkhTVRfD79MoKcx1RvlaTgq+MC9M04IcwsEAzYvzad2skOL8HHLDQcJBH7omCfh9VNU5pbaVNVH3om1Ebd3/gUYr6Ay2rYgE/cxesoHb//oev7n4eHLDQaKJFAG/j9bNCuncpoRhfTtnfWuBkwpeuHori1ZvZcP2vZiWzYJVWwj6dSIhZ8BMduqSAmXv6wi0bEVhbpjq+jiPvj6FIb07MmJIT04c3JNoIkVuOIg7MmMf7hVo2oq8SJD8SJDi/Ag7Kmt49cN5BP06Pk0j7V6MNIgBZw6Wfl1ne0UNrUsLadm0gA6tmtC7cyvat2hCuxbF+70vhmnta24VzvivgN/Hyo07eeCVT6iujxPwO0mohsPaGzuNyof+VyjIzlDu1aklF544iNFlvSktznMsYkZM7q1V1zQqa6O8+uFcdlbUEgkFyI0Eqa1PUFkbZdr81WzZXZ3NTgLZSjpwDqi5kSCmm2beUVHDk785l2vKj6G6Lu5GJWSDQTf73mJbKcIBP+u3VTDk8vuJp9LkhUNuWadC1ySa5gx7YZ8eARjQvR09OzYnmTbx6RqWbVOcF2FA93aMGtwju8sl89yZ2SSmabNk3TbGfbKANz7+gq27q8iNhFzrD7aNu1mg8XPICNrn1g7XRRMooGOrprRv0YQB3drSuXUJLUsKCAedaZ+m5VSSWaZFTTTOlp3V7KmpZ8PWPXwybxU7K2vxu50wmdEAlu0MOMwMPcyEES3LomlhLhMevZ72LZq4MWc7a90VjnXPWGulyDYBjLrxcRav2eoUA1n7zgSZRBJu65PmpvtDfh8De7QjHPLTuXUpvbu0ollxHkV5YQzTueBSbjKouj7Ott3VLFy9lS9XbWHd1j1U1cUI+H2EAj5SaTP7/mW6Ug4FGr3LAe6MOLcwJxwKYBgmqbTB0X060bQol3gqxe6qOjQpSRsmNdGEe5tVJJMmmiYxTZtdVfXEE2n6HdaGUMDH4rXbsiKzG/QLOj6I8z+JlEGPji3o2KopyZThtmHtvz12P9dDOMPG8yJB2jcvZvGabWiaJN3wYCYy0RWneSA3EqRNaSHL1u+kOpqgd5dW5IQDbNheweK129ClJD83RNDvI+h3DrzJtFPM1a1Dc5oU5rCnqn7fQPOM39XIKukOhENC0LBPNJYbc40l0igUF500iKBba5whbVj4fRopw2TmovVMnb+KDdsr6d6+Ob+7ZBTd2zfn2vteo35RkoLccDaO29DKZjxq07Lp0rYUn66RSKWxVSbu7Fha3DG5mc0Awn2N0i/x+3U0TWZdhGzKWQHS8W1TKYOAT+e2y0+mVUkBE2YsZcWGHbR0/eifn3IUrUq+nu7OoJTisdenUBdLOFNS3dcsMlcNh5agDwmXA9wZbA0iE5ZlE4slOaxDc84fNZCBPdplLfGIQYc5EzZRxJMGqbSJZVtU18WZtmAtz74zA9Mw+N2lJ2JaNjc/NM4dvLLPJ00bJoN6tqdJQQ69urTi7qtHUx9PZkfcZufYfUXQGXy6xu1Pv8vS9TuYOn81UjhTijLNwKm0yUlDelI+oj9PjpvGik07+c3FJ3DxyUcSCflJpUzq4yk6tm5CxtNPGyYTP19KJBSgPp5k+YadjP9kAas37yIY8Lur3GyUEg1m6zkcKqI+ZCy0rRROi4WDAPJyw2zYXskdT79HQW4YW9nkhANcW34sAZ9OLJGkJpqgpj7B+m0V1EUTNG+Sz0UnDuIXZx5NTjjA9fe9Tk1tjLYtnW7qWDxF5zYlrN+6h19dNJKP5qzYt9vFTcTYDSIimQmjdsbygjOf2XRWW5T168K6rXswLZt40okn5+cEqamPs2F7JaOH9eb8UQN5b/pinhw/jVcmzKGkKJfObUppVVpAk4IcausThIN+KmqivDJxNlV1cWxbkUim8fl1QkG/08SbfXecF3KIaHg/DhlBfxWFW7bp0wkGfGiaRMPpQpm9ZAO/umikM0y8Lo4mneWYHVs1zYa/5q/YzFV/epXKqjr+fPNZrNywi//79EsuOHEgKzfv5oITB1GY55Rm6m4W8t/pwz1bZufN1cSSBPw6pmkxfGA35q/YxM9GduPv787CMC3uueZ0Js1axuDL7uO+G89idFlvRpf1Zuvuaj5fuJZlG3aSMkx2V9XTrlkRndqU8O70xVTVOeFGXRfk5YZQtsoOjPlf4JAVdAallNN6BfjcmuSZi9eh65JfXTiSkYO6Z8Nrtq2Y8sUq3vx4Pjv31nHVWUfTtDCXV96fxY69dTxwy9m8P30RnVo1paQo15keWpx/YAt8Mnlld9Rv2jAJ+n3069aGhau3cninVkyet4o/XncaT46bxt//+Tl/u+NidlfV8fgbU3jhvZlccupgjh3QlfNGDdzvoSuqozz+xhTGT15AwOfDtEx3L2HjLQP9rhzygs5g2Qpd2ZiGwqdpTJq1nA9nLqdLmxI6tykhLxKksiaKadmccWwfju3flfc+W8Lz/5zJyUN6culhrRn71/fp270dQ3p3YNqCNRzdpxOL12xl/bZKYN9yHtWgFy/zdQDlRhg0KaisiRJLpOnSppTcSID8SJCjDu/AE+Om8tDN5Xw0ezk/+/2zXHNWGY/98hxWbdrFe58t5tUP5xIO+rMjCXZW1vLlqi3srKwjLxJ0wpe6Ttowv/Ye/C9wyBwKD4TsWgs3lWyYFijBqcMOp2/X1vTt2prhA7sBsHFHJZ/OW8XQPp347Mu13PfSR1xz1tGUFOfz3vTFXFNeRlFehC27qhj3yXxevedyYsl0dqZddrMV+0XIsJUiNxTg3emLqY8n2ba7mvYtm/D2lIUM69uZqvoYT7w+hT/ecAYDu7dj3CcL6NahORe4Vnnr7mrmr9jMmi27nU6VVVvIjwTJbLbN9ETCvp0v/0v8z1jobF1zdoazI7RAQCc/J0SXts0oLc7nk7krWbtlN7quceXpQ7nrbxNZu3UP7z18Ldsqapi9ZAOv3H0ZpmURi6eorouRNi3iyTTSHSpp2wqfT3fDfV/xrV3jHUum6Nu1NacMPZxfPvoWl44ezFPjpjHyyO68fu+V3PvCJCqro9xz7Wl8+sVqxk9eQNPCXFo0zadpYYTNu3Qs2yY3FHCKlxq2TtF4egAPNv8zFjqzWsFyow2ZKUyZWmDDXZXWsmkB91x7OicN6UHQ72PX3jrCQT/F+TnEkin21sZ4fdI8bNtm4szlPHTz2dz5zHvcf9NZdO/QwpkJ50703886qn32WkrB3KUbSZsmVXVxBvVsx21PvsvZI/rxz6mLyAkHufn84/D7dFqVFFJTH+e1SfN44JWPqY+lSBsmiUSKYNCPT9cQUnzl4LfvntAY+wK/D/8zFtr9eN3oM9n91j4h8esaft1Z4VBVF+OViXNYvmEH8WSaHRU1LFi5hR4dmlNalMfHc1aws7IWTUpi0ThbdlXRv1tbPl+0jl6dW7kdMaLBrX+fvJxrySadthncuwNjn53An56byCO/OZc7rjiZqvo4L429lI/nLEeXkp0Vtdzz3ERywkHmr9hEbX0CIQR5kSDBgM9dIWc5XeXf8Nv+L/I/Y6H/E05YzbGq8WQalbF4UuD36U5q2rKzVtHn04jGU5w9vB8/P+UoXpk4h1fuvoy6aNKZB+2ulssujncjHJmVEWnTYuS1j7Jw9RZA8LPjB3D1WcP4YOYyauvjjBrck1cnzeWN92eDz8koBgNOxlM08JFh384Yj/8hC/2fcGqPHYXkhAP7ajGUY82dmXAie+DT3LXIn8xdyS8vHImmaSxZt53u7ZtTF0vs61ZxH0cKsJXTKBAOhvhw1jKWb9jhlpoqXps0l7c+XZD1w597dyaaJikozst2sDTchdgQT8z7aBRbsH5sbDcZYVl2ds1x5mtKKaRwMn1SOGvWPpm7kuOP7MaL789Ck868ENXAfGZ+RgicVi6leOXDuaQNx2+3laIgN0Je2HElcsJBAn7d2bnoDkZvLBP0/9t4gj5A9uuCdktILdsmLyfMY29MoUeHFuyoqGXRmm1u2anbnUKm08V29rkEfXyxchMzF64nJxzEshW2e6Gk3BFczjRT6V5M7BcC9Pj3eIL+TjiHMdPtP9y5u5rXP/qCs4f344lxU1HKqWiTUiIUzgxp286uoVi8ehtVdTGUcqIrCLIr4EzTxrQVhmGibLLTkjyv4sDwBP0dUG7Yz687O1OELnln2kJOHdYLw7SYMGNJdqeLpklShuE08tqK6ro4UnOaXnVdc+ZLZ81vAzeFfSWqHgeOJ+jviJOVUySSBq1LinjuDxfxydyVnHp0L96ZttCxrK6l1d0hLgGfxhsff0H39s05qndHausTTstVg1Yv2LfCuTHt2P6p4An6AGkYWVDK2Y2SMkwi4QDj7/sFc5dtYsoXqygf0Z92LZryxLhpFOWFMW2bnFCAHRU11MfTnDC4B1+u2sLdV4+mKD9CImXg92koV9KZ/dwZPGF/OzxBfwcyNSG2rXhl7KUsW7edmUvW8/At5dRGE1x3zjFMm7+aVz+cR35OiKnzV/PsOzPQNcne6iidW5eyty7G0787P+tegFNwnxks07BSztPzgeMJ+jsgpaC2PsHtV5xM2jB5ddI83nngauYs28g7UxfSJD/C3deM5rd/eZsTrn+Mn/3+b/Q9rA0FuSE27qxk9tINFOaGKcqPcOuFI6mti2dH/+4/JNHj2+IJ+luQaaWqjyY5a3g/zhrej4kzl/LaPZfz+BtTeeLNqRzTvyvVdXH6HdaG318yiskT53BaWR9+NnIAtdEE54wYwIqNO/lo9nKaFedzXfkxDOzVgfpYCk3T3HOhp+jvipf6PkCc/d0C01aEAz7mvvg7tlXUMGvxej6avZy2zYu55qxhBAM+urRthu3GnR97/VOuOP1oggFngM2i1VsJB3xcdvfLdG5dwnO3X8yaLXsYee2jJNNpZw42ZIuNpDM3wakN8fiPeBb6AJHSqaCLJVLceO5xVNXFOPXmJ7j7uYmcOKQnN557HK98MIcmBTnEEymn8MmncceVp5AXCSKFIJFMkxMO8OjrU3jqt+dTURNl+DWP0LxJPleeMZRoPJWtawacfkQpkJ7BPmA8QR8AmYXzqbRF04IcLjxpEBt37OWy0YP59OlbyY+EOPGGxznhqB4sWbedtLtmwjRtNu3YS9o08es6fp9Te92mWREX3v53rjxtKGX9urBtdzWXnnoUBblh0u4mV/Acj++CJ+gDwKnlcMbSHtWrQ3b7VX5umMff+JSr/vA8D918NntrY6zYsJNmxfnO8BvLZsOOSnRNw+/Orlu3tYI+XVoxsGd7Lrj9eWqicd77bDH5OWGOOrwDqZSRzSiqbDDP40DxBH0AZMZ3oRTtWzQhkTL4cOYyBvfqSK/OrbjsvOHURBO8NmkeV54+lLqYs7VK1yT10YRTp5E2SJkmfbu2ZtJsp5fx5KG9uPWCkfTq3Aq/T6d3l9aA4zdnhtI0mH7gcQB4gj4AnIGGTsF+ZXV9dvvqwB7tyAkH+GDaQl6aOJtfX3S8uw9QBzdWbViWG7d2NwmYFhefchQvvDeLbXuqEUBxfphl67ezZO021zqDLkXWStu2J+kDxauHPlCUs6zzozkrOe7qh9mwrYJzRg7g3uvPoKo6Sq+urXln2iKuLS/Dtu3sDvDqOme1W8owCAcDLF+/g0/nreKNe690urb31nLKzU/i92mkDYuccMApFXXHHjSmHYE/BTwLfQBkSjgN0ySeTLFs/XaSaZP3PlvCfS9/xO2/OIVXJs5BCkGPDi2wlTMW17RsqutimKZTaVcfT9KnS2tmLVnPxh2VhAI+fn77C/h9jn8d8DmrM0zT3u+5PQ4cT9AHQGbakRQCXdecKZ8BH9F4gqfGTWPZ+h1EEynOHtEf07KJxVPEEikAkmnTjXpIAj6dgF/nuAFd2VlRy4ezlrNp6x40KYmnnGmhzkri7Ewar47jW+IJ+gAQkN01mKmz0KRA05zewsqaKLdeMIKjDu9APJlG0yQ+XSOZNqmLORV1tuUUM23dXcWFJx3JyCOd+R/Cp7kjeJ2GAcN0ivoznTL/K93aBwtP0AeI43aAUs5gcWd/oKS2PsHy9Ts4/sjuPPiPj/ndE+8QDvqdWXqaIJE0sG3ljs0V/Oaxt7nrbxPo3r65cyh0W7BU9uCn9mu38qrtvh2eoA+QTGtUZtWbbLAmbtLs5U5/oBBcf84xaJqWjR+XFue6sz9MfJrGmCtPoXmTfHZU1rJ4zTZ0d7+2M+bgKxENt1DJ0/OB4wn6O2C5FlehyIkEmTp/NRNnLuN3l4xCE4JU2sAwbYJ+H6eV9UHXNHTdGbBeWRvl9itO5p2pi1i2fgdBn88dRN5wLEFmisg+X9rjwPCKk74jGZFJ6UwSbdG0gN6dWzF7yXpevedyRgzqRmVNlLxIkHgyTUFumMden8Jv//J/HN6pFVt2VpFIpZFy/zFeHt8PT9AHgUwNs2U5GcFBPdvz/iPXEQ75qYsmKSnK5cvVWzj5hidIpNPZtRmZg6C7NNbjIOC5HAcB5c58Dvg18iJBvlixiWv//BqptElJUS7L1u/girtepibmDFePhALOPDo3auJ9CAcPL1N4EMiucHMbZyOhAG9OXkBdLMnxR3bnL29OZevuanLDAQzL2rccaL+Bil5G8GDguRwHkcy2NHASMUnDxDQtQgGfuyjT6Rt0avW9t/2HwLPQB5GGfrCtFEG/jgz6Ue5cusxyeY8fDk/QPyC2rbDtQ2PlcGPBO494HFJ4gvY4pPAE7XFI4Qna45DCE7THIYUnaI9DCk/QHocUnqA9Dik8QXscUniC9jik8ATtcUjhCdrjkMITtMchhUQpr6HN45BBKilrvT55j0MFKRDV+xrmPTwaKUKghKiT2PZOnFGvnqA9GinO+B8BuyRCrBVCgBKeoD0aJwqF1ECp9RLkEverniPt0UgRSiBAaEt0sJcoW9neRECPxouSTrBOLZT4WaaUqkRIZziEh0fjQiGlULYVE6a1WMamPL5bCPGlkDoovJi0RyNDKYSOQCyPzi5e4y6YlpOREi9059HoUNhCaiDsaTDWlgDClh8q0zAQQvsvvzwPj2+HQMM2EUJNAJCgRPTzh1ai7AVC84HCm4zi0ThQyhZSF7YyV0dLi+cCSMru1AAlEC87B0PP6/BoNCikDym01xk/Nk3ZGF0yfawNIALmONtK70FqEk/VHo0BIaUyUzFDqJcAOAZbAjbl5Vr9p0/uFYgXheYXXgWex08epSyh+wVCjktNf2wT5eUaY91DIeO7K0DYPvm4bRo1COlZaY+fMgohhLKMtFDag4BwNZwp8B9rU14uE1Me2a6UekzoAc9Ke/x0UcoWekAq1PPRzx9aQfk4CY7rvK9jZfx4G8bIhGE/rMzUJjRdgidqj58aSiE1YVvGXpB3gxKMX571Jhq2YCnKVwjm/aVOCH4lpC68zKHHTw6FJTS/lHBbfMajOyk/J2ud4ZuWL5WP0xh/jhU++qZXpOa7UBlJy0u4ePwkUMrCF9CwzEmxGY+dRHm5dDwLvtFCO4w/x4Yx0ie5QVnmWqH5NM+f9vivo5SN1CW2vdP2ySuATDBjv+DFN3V9K8pXiNrpj9XYwr5AKVJIr0XL47+KQkiFEChlX5qY8sh2ysv3czUyfPMYg/HjLcrLtcRnj3+Bsq4Q0i9B7GfaPTx+JBQKS+gBDeyb4zMe+4iyMTrjx39jica/nssxfrxF2Rg99vnj/1BK/VLoAc09JHqi9vixUChlC19QV5b5p9hnjz1O2Rid6WPNf/UD/7lLpaxMZ/p0M/fom3+lNP0BZaRshBJ4sw88flgUClv4g5oyjHtjnz/6//6TmOFAV0y7oo4Mu/VWIcVDykw7TroQ3uQlj4OPoy2EHpTKMv8Ym/HIHygv174a0fgmDtTKCsrHSTecd4kQ8mlQQSzTRAhv16HHwUMpE6npzmgNdXPss0cfO1Axw4EL2sE1+TllNw5VSntRSK2jE6dGgGetPb4Pyj38BXWlrB0K68r4Z49/4Ir5gGv0v70f7D5BTtmtTVD8BSnPVZYJtmm6CRjPt/b4Nignxiw1oQVQtjnBsqzrkjMf35Jxdb/Ng3038TW4asJlN18kFH8U0tdamUknm+P41p6wPf4dyvWVNaEHwDb3IOSd0ekPPw3wbS1zhu8hOiXgTgFj7ZyhNzQVmu+XtlLXCKnlKSsNtu25Ih7fgLJRqIyQlWUmhRTPW/j+nJh+/7aGuvouj/79rWiDK8k/7NeddawbUfYFUtMLlW2BbWT6FIU7zMaz3P9bKNc/thFoSF0IqaNsox4lx+PTHotNedCZ3vUdrXJDDpa4hFsoYgGEBv+6hfCp84WyzxPY/ZA+UBbKNkHZCuWeVh0L7gn80EKhVObzBaQUUgepgW1iK5ZLqb1p+NU/Up88tBFwhTzOhu8/X/Egi2mMpHyF2HeVjZF5R9cNsOAk4DiU3Qsp84WQjqZtG7C9MpFDhcwNWGoI3B4RpeqAFQgxTQgxMVqRO48VY9OAK+Tu6ru6F9/4Eg7WA+2PEpTdqX01q5NXdksnW9m9lJD9sM3eKK2jwmouIP+Hey0ePxZKiDqB2AVqPVJbii2+FJLF0ekPr9rvG8vG6EzHPphCzvD/AUPSyibkTXxcAAAAAElFTkSuQmCC" />
 </head>
 <body>
-  <!-- ============================= APP BAR ============================= -->
   <header class="appbar">
     <div class="container appbar__inner">
       <div class="brand">
@@ -609,97 +645,159 @@ tr.row-clickable { cursor: pointer; }
         </span>
       </div>
       <span class="appbar__divider" aria-hidden="true"></span>
-      <p class="appbar__title">Referral Dashboard</p>
-      <span class="appbar__meta" id="lastUpdated"></span>
+      <p class="appbar__title">Contact Referral</p>
     </div>
   </header>
 
   <main class="page">
     <div class="container">
-      <div class="page__head">
-        <div>
-          <h1 class="page__title">Referrals</h1>
-          <p class="page__sub">Every referral submitted from the landing page. Refresh to pull the latest.</p>
-        </div>
-        <button class="btn btn--primary" id="refreshBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
-          Refresh
-        </button>
-      </div>
+      <a class="back-link" href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to dashboard
+      </a>
 
-      <!-- Error banner (hidden unless something fails) -->
-      <div class="banner banner--error" id="errorBanner" hidden>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <div>
-          <strong>Couldn't load referrals</strong>
-          <span id="errorText">Something went wrong reaching Supabase.</span>
-        </div>
-        <button class="btn btn--sm" id="errorRetry" type="button">Try again</button>
-      </div>
-
-      <!-- Toolbar -->
-      <div class="toolbar" id="toolbar" hidden>
-        <div class="toolbar__search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="searchInput" type="search" autocomplete="off"
-                 placeholder="Search by name, phone, or Referral ID…"
-                 aria-label="Search referrals" />
-        </div>
-        <div class="toolbar__field">
-          <label for="statusFilter">Status</label>
-          <select class="select" id="statusFilter" aria-label="Filter by status">
-            <option value="">All statuses</option>
-            <option value="New">New</option>
-            <option value="Contacted">Contacted</option>
-            <option value="Appointment Booked">Appointment Booked</option>
-            <option value="Sale Completed">Sale Completed</option>
-            <option value="Invalid">Invalid</option>
-            <option value="Closed">Closed</option>
-          </select>
-        </div>
-        <span class="toolbar__count" id="resultCount"></span>
-      </div>
-
-      <!-- Table -->
-      <div class="table-wrap" id="tableWrap" hidden>
-        <div class="table-scroll">
-          <table class="data" id="table">
-            <thead>
-              <tr>
-                <th class="sortable" data-key="referral_code">Referral ID</th>
-                <th class="sortable" data-key="id">Row ID</th>
-                <th class="sortable" data-key="created_at">Submitted</th>
-                <th class="sortable" data-key="your_name">Referrer</th>
-                <th>Referrer Phone</th>
-                <th>Referrer Email</th>
-                <th class="sortable" data-key="friend_name">Referred Person</th>
-                <th>Referred Phone</th>
-                <th>Referred Email</th>
-                <th class="sortable" data-key="status">Status</th>
-                <th>Notes</th>
-                <th class="sortable" data-key="sale_verified">Sale Verified</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Loading state -->
+      <!-- Loading -->
       <div class="table-wrap" id="loadingState">
         <div class="state">
           <div class="spinner" aria-hidden="true"></div>
-          <p class="state__title">Loading referrals…</p>
-          <p>Fetching the latest data from Supabase.</p>
+          <p class="state__title">Loading referral…</p>
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div class="table-wrap" id="emptyState" hidden>
-        <div class="state">
-          <svg class="state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          <p class="state__title" id="emptyTitle">No referrals yet</p>
-          <p id="emptyText">When someone submits the referral form, it will appear here.</p>
+      <!-- Error -->
+      <div class="banner banner--error" id="errorBanner" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <strong>Couldn't load this referral</strong>
+          <span id="errorText">Something went wrong.</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div id="content" hidden>
+        <!-- Referral ID bar -->
+        <div class="idbar">
+          <div>
+            <div class="idbar__label">Referral ID</div>
+            <div class="idbar__code" id="refCode">—</div>
+          </div>
+          <button class="copybtn" type="button" id="copyCode" title="Copy Referral ID" aria-label="Copy Referral ID">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <span class="appbar__spacer" style="margin-left:auto"></span>
+          <div style="text-align:right">
+            <div class="idbar__label">Supabase Row ID</div>
+            <div class="idbar__rowid" id="rowId">—</div>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Left column: people + notes -->
+          <div>
+            <div class="card">
+              <p class="card__eyebrow">Referrer</p>
+              <h2 class="card__title" id="referrerName">—</h2>
+              <div class="field-row">
+                <span class="field-row__label">Phone</span>
+                <span class="field-row__value" id="referrerPhone">—</span>
+                <span class="field-row__actions" id="referrerPhoneActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Email</span>
+                <span class="field-row__value" id="referrerEmail">—</span>
+                <span class="field-row__actions" id="referrerEmailActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Prefers</span>
+                <span class="field-row__value" id="contactMethod">—</span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Referred Person</p>
+              <h2 class="card__title" id="friendName">—</h2>
+              <div class="field-row">
+                <span class="field-row__label">Phone</span>
+                <span class="field-row__value" id="friendPhone">—</span>
+                <span class="field-row__actions" id="friendPhoneActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Email</span>
+                <span class="field-row__value" id="friendEmail">—</span>
+                <span class="field-row__actions" id="friendEmailActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Submitted</span>
+                <span class="field-row__value" id="submitted">—</span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Notes</p>
+              <textarea class="notes-area" id="notes" placeholder="Add call notes, follow-ups, or anything the team should know…"></textarea>
+              <div class="card__row">
+                <span class="cell-muted" id="notesHint">Notes save to Supabase.</span>
+                <button class="btn btn--primary btn--sm" id="saveNotes" type="button">Save notes</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column: status + actions -->
+          <div>
+            <div class="card">
+              <p class="card__eyebrow">Status</p>
+              <select class="select" id="statusSelect" style="width:100%" aria-label="Referral status"></select>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Call &amp; copy</p>
+              <div class="action-stack">
+                <button class="btn" type="button" id="callReferrer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+                  Call referrer
+                </button>
+                <button class="btn" type="button" id="callFriend">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+                  Call referred person
+                </button>
+                <div class="btn-split">
+                  <button class="btn btn--ghost btn--sm" type="button" id="copyEmail">Copy email</button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="copyPhone">Copy phone</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Email</p>
+
+              <div class="email-field">
+                <label for="emailTarget">To</label>
+                <select class="select" id="emailTarget" aria-label="Choose email recipient"></select>
+              </div>
+
+              <div class="email-field">
+                <label for="emailSubject">Subject</label>
+                <input class="input" id="emailSubject" type="text" aria-label="Email subject" />
+              </div>
+
+              <div class="email-field">
+                <label for="emailBody">Message</label>
+                <textarea class="notes-area" id="emailBody" aria-label="Email message"></textarea>
+              </div>
+
+              <p class="email-hint" id="codeHint"></p>
+
+              <div class="card__row">
+                <button class="btn btn--ghost btn--sm" type="button" id="resetEmail">Reset to template</button>
+                <button class="btn btn--primary btn--sm" type="button" id="sendEmail">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Send email
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -712,11 +810,10 @@ tr.row-clickable { cursor: pointer; }
     </div>
   </footer>
 
-  <!-- Supabase client (v2) -> config -> data layer -> shared UI -> page logic -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="db.js"></script>
   <script src="script.js"></script>
-  <script src="dashboard.js"></script>
+  <script src="contact.js"></script>
 </body>
 </html>
