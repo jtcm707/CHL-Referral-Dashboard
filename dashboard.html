@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Contact Referral | Christian Hearing &amp; Tinnitus</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+</head>
+<body>
+  <header class="appbar">
+    <div class="container appbar__inner">
+      <div class="brand">
+        <img class="brand__mark" src="assets/logo-icon.png" alt="" aria-hidden="true"
+             width="40" height="40" />
+        <span class="brand__name">
+          Christian Hearing <span class="brand__amp">&amp;</span> Tinnitus
+        </span>
+      </div>
+      <span class="appbar__divider" aria-hidden="true"></span>
+      <p class="appbar__title">Contact Referral</p>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <a class="back-link" href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to dashboard
+      </a>
+
+      <!-- Loading -->
+      <div class="table-wrap" id="loadingState">
+        <div class="state">
+          <div class="spinner" aria-hidden="true"></div>
+          <p class="state__title">Loading referral…</p>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="banner banner--error" id="errorBanner" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <strong>Couldn't load this referral</strong>
+          <span id="errorText">Something went wrong.</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div id="content" hidden>
+        <!-- Referral ID bar -->
+        <div class="idbar">
+          <div>
+            <div class="idbar__label">Referral ID</div>
+            <div class="idbar__code" id="refCode">—</div>
+          </div>
+          <button class="copybtn" type="button" id="copyCode" title="Copy Referral ID" aria-label="Copy Referral ID">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <span class="appbar__spacer" style="margin-left:auto"></span>
+          <div style="text-align:right">
+            <div class="idbar__label">Supabase Row ID</div>
+            <div class="idbar__rowid" id="rowId">—</div>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Left column: people + notes -->
+          <div>
+            <div class="card">
+              <p class="card__eyebrow">Referrer</p>
+              <h2 class="card__title" id="referrerName">—</h2>
+              <div class="field-row">
+                <span class="field-row__label">Phone</span>
+                <span class="field-row__value" id="referrerPhone">—</span>
+                <span class="field-row__actions" id="referrerPhoneActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Email</span>
+                <span class="field-row__value" id="referrerEmail">—</span>
+                <span class="field-row__actions" id="referrerEmailActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Prefers</span>
+                <span class="field-row__value" id="contactMethod">—</span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Referred Person</p>
+              <h2 class="card__title" id="friendName">—</h2>
+              <div class="field-row">
+                <span class="field-row__label">Phone</span>
+                <span class="field-row__value" id="friendPhone">—</span>
+                <span class="field-row__actions" id="friendPhoneActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Email</span>
+                <span class="field-row__value" id="friendEmail">—</span>
+                <span class="field-row__actions" id="friendEmailActions"></span>
+              </div>
+              <div class="field-row">
+                <span class="field-row__label">Submitted</span>
+                <span class="field-row__value" id="submitted">—</span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Notes</p>
+              <textarea class="notes-area" id="notes" placeholder="Add call notes, follow-ups, or anything the team should know…"></textarea>
+              <div class="card__row">
+                <span class="cell-muted" id="notesHint">Notes save to Supabase.</span>
+                <button class="btn btn--primary btn--sm" id="saveNotes" type="button">Save notes</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column: status + actions -->
+          <div>
+            <div class="card">
+              <p class="card__eyebrow">Status</p>
+              <select class="select" id="statusSelect" style="width:100%" aria-label="Referral status"></select>
+            </div>
+
+            <div class="card">
+              <p class="card__eyebrow">Actions</p>
+              <div class="action-stack">
+                <button class="btn" type="button" id="callReferrer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+                  Call referrer
+                </button>
+                <button class="btn" type="button" id="callFriend">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+                  Call referred person
+                </button>
+                <button class="btn btn--primary" type="button" id="sendEmail">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Send email
+                </button>
+                <div class="toolbar__field" style="margin-top:2px">
+                  <label for="emailTarget">Email to</label>
+                  <select class="select" id="emailTarget" style="flex:1" aria-label="Choose email recipient"></select>
+                </div>
+                <button class="btn btn--ghost btn--sm" type="button" id="copyEmail">Copy email</button>
+                <button class="btn btn--ghost btn--sm" type="button" id="copyPhone">Copy phone</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="container foot__inner">
+      <span>&copy; <span id="year"></span> Christian Hearing &amp; Tinnitus — internal use only.</span>
+      <img src="assets/logo-icon.png" alt="" aria-hidden="true" />
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="db.js"></script>
+  <script src="script.js"></script>
+  <script src="contact.js"></script>
+</body>
+</html>
