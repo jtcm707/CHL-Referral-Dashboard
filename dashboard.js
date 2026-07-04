@@ -1,265 +1,383 @@
 /* =========================================================================
-   contact.js — Page 2 logic.
-   Loads one referral (by ?id=) and lets staff contact them: call, email
-   (pre-filled), copy details, change status, and save notes. All writes go
-   through db.js.
+   dashboard.js — Page 1 logic.
+   Talks to Supabase only through the DB layer (db.js) and uses shared UI
+   helpers (script.js). No framework.
    ========================================================================= */
 (function () {
   'use strict';
 
-  var EMAIL_SUBJECT = 'Christian Hearing & Tinnitus Referral';
-  var EMAIL_BODY = [
-    'Hello,',
-    '',
-    'Thank you for participating in our referral program.',
-    '',
-    'We received your referral and would like to schedule your appointment.',
-    '',
-    'Please reply to this email or call us at your convenience.',
-    '',
-    'Thank you,',
-    'Christian Hearing & Tinnitus',
-  ].join('\n');
-
   var el = {
-    loading:  document.getElementById('loadingState'),
-    content:  document.getElementById('content'),
-    errBanner:document.getElementById('errorBanner'),
-    errText:  document.getElementById('errorText'),
-
-    refCode:  document.getElementById('refCode'),
-    rowId:    document.getElementById('rowId'),
-    copyCode: document.getElementById('copyCode'),
-
-    referrerName:  document.getElementById('referrerName'),
-    referrerPhone: document.getElementById('referrerPhone'),
-    referrerEmail: document.getElementById('referrerEmail'),
-    referrerPhoneActions: document.getElementById('referrerPhoneActions'),
-    referrerEmailActions: document.getElementById('referrerEmailActions'),
-    contactMethod: document.getElementById('contactMethod'),
-
-    friendName:  document.getElementById('friendName'),
-    friendPhone: document.getElementById('friendPhone'),
-    friendEmail: document.getElementById('friendEmail'),
-    friendPhoneActions: document.getElementById('friendPhoneActions'),
-    friendEmailActions: document.getElementById('friendEmailActions'),
-    submitted:   document.getElementById('submitted'),
-
-    notes:     document.getElementById('notes'),
-    saveNotes: document.getElementById('saveNotes'),
-    status:    document.getElementById('statusSelect'),
-
-    callReferrer: document.getElementById('callReferrer'),
-    callFriend:   document.getElementById('callFriend'),
-    sendEmail:    document.getElementById('sendEmail'),
-    emailTarget:  document.getElementById('emailTarget'),
-    copyEmail:    document.getElementById('copyEmail'),
-    copyPhone:    document.getElementById('copyPhone'),
+    loading:   document.getElementById('loadingState'),
+    empty:     document.getElementById('emptyState'),
+    emptyTitle:document.getElementById('emptyTitle'),
+    emptyText: document.getElementById('emptyText'),
+    toolbar:   document.getElementById('toolbar'),
+    tableWrap: document.getElementById('tableWrap'),
+    tbody:     document.getElementById('tableBody'),
+    search:    document.getElementById('searchInput'),
+    filter:    document.getElementById('statusFilter'),
+    count:     document.getElementById('resultCount'),
+    refresh:   document.getElementById('refreshBtn'),
+    updated:   document.getElementById('lastUpdated'),
+    errBanner: document.getElementById('errorBanner'),
+    errText:   document.getElementById('errorText'),
+    errRetry:  document.getElementById('errorRetry'),
+    thead:     document.querySelector('#table thead'),
   };
 
-  var referral = null;
+  var state = {
+    all: [],
+    sortKey: 'created_at',
+    sortDir: 'desc',   // 'asc' | 'desc'
+    search: '',
+    status: '',
+  };
 
-  function getId() {
-    var params = new URLSearchParams(window.location.search);
-    return params.get('id');
+  // ---- View helpers ------------------------------------------------------
+  function show(node) { if (node) node.hidden = false; }
+  function hide(node) { if (node) node.hidden = true; }
+
+  function setError(message) {
+    el.errText.textContent = message;
+    show(el.errBanner);
+    hide(el.loading);
+    hide(el.toolbar);
+    hide(el.tableWrap);
+    hide(el.empty);
+  }
+  function clearError() { hide(el.errBanner); }
+
+  function statusClass(status) {
+    return 'st-' + String(status || 'New').replace(/\s+/g, '');
   }
 
-  function showError(msg) {
-    el.errText.textContent = msg;
-    el.errBanner.hidden = false;
-    el.loading.hidden = true;
-    el.content.hidden = true;
-  }
+  function digits(v) { return String(v || '').replace(/\D/g, ''); }
 
-  // Small copy button appended to a field's actions cell.
-  function addCopyButton(container, value, label) {
-    if (!value) return;
-    var btn = document.createElement('button');
-    btn.className = 'copybtn';
-    btn.type = 'button';
-    btn.title = 'Copy ' + label;
-    btn.setAttribute('aria-label', 'Copy ' + label);
-    btn.innerHTML =
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-    btn.addEventListener('click', function () { UI.copy(value, label); });
-    container.appendChild(btn);
-  }
-
-  function setContact(valueEl, actionsEl, value, kind, label) {
-    if (!value) {
-      valueEl.innerHTML = '<span class="cell-muted">Not provided</span>';
-      return;
+  // ---- Filtering + sorting ----------------------------------------------
+  function matchesSearch(r, q) {
+    if (!q) return true;
+    var needle = q.trim().toLowerCase();
+    var digitNeedle = digits(q);
+    var haystack = [r.your_name, r.friend_name, r.referral_code]
+      .map(function (x) { return String(x || '').toLowerCase(); })
+      .join(' ');
+    if (haystack.indexOf(needle) !== -1) return true;
+    if (digitNeedle) {
+      if (digits(r.your_phone).indexOf(digitNeedle) !== -1) return true;
+      if (digits(r.friend_phone).indexOf(digitNeedle) !== -1) return true;
     }
-    var href = kind === 'phone' ? UI.telHref(value) : 'mailto:' + value;
-    var a = document.createElement('a');
-    a.href = href;
-    a.textContent = value;
-    valueEl.innerHTML = '';
-    valueEl.appendChild(a);
-    addCopyButton(actionsEl, value, label);
+    return false;
   }
 
-  function fillStatusOptions(current) {
-    el.status.innerHTML = DB.STATUSES.map(function (s) {
+  function compare(a, b, key) {
+    var av = a[key], bv = b[key];
+    if (key === 'created_at') {
+      return new Date(av || 0) - new Date(bv || 0);
+    }
+    if (key === 'sale_verified') {
+      return (av ? 1 : 0) - (bv ? 1 : 0);
+    }
+    av = String(av == null ? '' : av).toLowerCase();
+    bv = String(bv == null ? '' : bv).toLowerCase();
+    return av < bv ? -1 : av > bv ? 1 : 0;
+  }
+
+  function currentView() {
+    var rows = state.all.filter(function (r) {
+      if (state.status && r.status !== state.status) return false;
+      return matchesSearch(r, state.search);
+    });
+    rows.sort(function (a, b) {
+      var c = compare(a, b, state.sortKey);
+      return state.sortDir === 'asc' ? c : -c;
+    });
+    return rows;
+  }
+
+  // ---- Rendering ---------------------------------------------------------
+  var copyIcon =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+  function copyBtn(value, label) {
+    if (!value) return '';
+    return (
+      '<button class="copybtn" type="button" data-copy="' +
+      UI.escapeHtml(value) + '" data-label="' + UI.escapeHtml(label) +
+      '" title="Copy ' + UI.escapeHtml(label) + '" aria-label="Copy ' +
+      UI.escapeHtml(label) + '">' + copyIcon + '</button>'
+    );
+  }
+
+  function statusSelect(r) {
+    var opts = DB.STATUSES.map(function (s) {
       return '<option value="' + UI.escapeHtml(s) + '"' +
-        (s === current ? ' selected' : '') + '>' + UI.escapeHtml(s) + '</option>';
+        (s === r.status ? ' selected' : '') + '>' + UI.escapeHtml(s) + '</option>';
     }).join('');
+    return (
+      '<select class="status-select ' + statusClass(r.status) +
+      '" data-id="' + UI.escapeHtml(r.id) + '" data-role="status" ' +
+      'aria-label="Change status">' + opts + '</select>'
+    );
   }
 
-  function fillEmailTargets() {
-    var opts = [];
-    if (referral.your_email) {
-      opts.push({ v: 'referrer', label: 'Referrer — ' + (referral.your_name || referral.your_email) });
-    }
-    if (referral.friend_email) {
-      opts.push({ v: 'friend', label: 'Referred — ' + (referral.friend_name || referral.friend_email) });
-    }
-    if (opts.length === 0) {
-      el.emailTarget.innerHTML = '<option value="">No email on file</option>';
-      el.emailTarget.disabled = true;
-      el.sendEmail.disabled = true;
-      el.copyEmail.disabled = true;
-      return;
-    }
-    el.emailTarget.disabled = false;
-    el.sendEmail.disabled = false;
-    el.copyEmail.disabled = false;
-    el.emailTarget.innerHTML = opts.map(function (o) {
-      return '<option value="' + o.v + '">' + UI.escapeHtml(o.label) + '</option>';
-    }).join('');
+  function saleToggle(r) {
+    return (
+      '<label class="toggle" title="Mark sale verified">' +
+      '<input type="checkbox" data-id="' + UI.escapeHtml(r.id) +
+      '" data-role="sale"' + (r.sale_verified ? ' checked' : '') + ' />' +
+      '<span class="toggle__track" aria-hidden="true"></span>' +
+      '<span class="toggle__label">' + (r.sale_verified ? 'Yes' : 'No') + '</span>' +
+      '</label>'
+    );
   }
 
-  function selectedTarget() {
-    var v = el.emailTarget.value;
-    if (v === 'friend') {
-      return { email: referral.friend_email, phone: referral.friend_phone, name: referral.friend_name };
-    }
-    return { email: referral.your_email, phone: referral.your_phone, name: referral.your_name };
+  function emailCell(email) {
+    if (!email) return '<span class="cell-muted">—</span>';
+    return (
+      '<span class="copychip"><a href="mailto:' + UI.escapeHtml(email) + '">' +
+      UI.escapeHtml(email) + '</a>' + copyBtn(email, 'email') + '</span>'
+    );
+  }
+  function phoneCell(phone) {
+    if (!phone) return '<span class="cell-muted">—</span>';
+    return (
+      '<span class="copychip"><a href="' + UI.telHref(phone) + '">' +
+      UI.escapeHtml(phone) + '</a>' + copyBtn(phone, 'phone') + '</span>'
+    );
   }
 
-  function populate() {
-    el.refCode.textContent = referral.referral_code || '—';
-    el.rowId.textContent = referral.id || '—';
+  function rowHtml(r) {
+    var notes = r.notes
+      ? '<td class="cell-notes">' + UI.escapeHtml(r.notes) + '</td>'
+      : '<td class="cell-notes empty">No notes</td>';
 
-    el.referrerName.textContent = referral.your_name || 'Unknown';
-    setContact(el.referrerPhone, el.referrerPhoneActions, referral.your_phone, 'phone', 'referrer phone');
-    setContact(el.referrerEmail, el.referrerEmailActions, referral.your_email, 'email', 'referrer email');
-    el.contactMethod.textContent = referral.contact_method || '—';
-
-    el.friendName.textContent = referral.friend_name || 'Unknown';
-    setContact(el.friendPhone, el.friendPhoneActions, referral.friend_phone, 'phone', 'referred phone');
-    setContact(el.friendEmail, el.friendEmailActions, referral.friend_email, 'email', 'referred email');
-    el.submitted.textContent = UI.formatDate(referral.created_at);
-
-    el.notes.value = referral.notes || '';
-    fillStatusOptions(referral.status);
-    fillEmailTargets();
+    return (
+      '<tr class="row-clickable" data-id="' + UI.escapeHtml(r.id) + '">' +
+        '<td><span class="copychip"><span class="cell-code">' +
+          UI.escapeHtml(r.referral_code || '—') + '</span>' +
+          copyBtn(r.referral_code, 'Referral ID') + '</span></td>' +
+        '<td><span class="copychip"><span class="cell-muted" title="' +
+          UI.escapeHtml(r.id) + '">' + UI.escapeHtml(UI.shortId(r.id)) + '</span>' +
+          copyBtn(r.id, 'Row ID') + '</span></td>' +
+        '<td class="cell-muted">' + UI.escapeHtml(UI.formatDate(r.created_at)) + '</td>' +
+        '<td class="cell-strong">' + UI.escapeHtml(r.your_name || '—') + '</td>' +
+        '<td>' + phoneCell(r.your_phone) + '</td>' +
+        '<td>' + emailCell(r.your_email) + '</td>' +
+        '<td class="cell-strong">' + UI.escapeHtml(r.friend_name || '—') + '</td>' +
+        '<td>' + phoneCell(r.friend_phone) + '</td>' +
+        '<td>' + emailCell(r.friend_email) + '</td>' +
+        '<td>' + statusSelect(r) + '</td>' +
+        notes +
+        '<td>' + saleToggle(r) + '</td>' +
+      '</tr>'
+    );
   }
 
-  // ---- Email --------------------------------------------------------------
-  // A browser page cannot send email silently (that needs a server/API). The
-  // reliable, universal path is a mailto: link, which opens the user's default
-  // mail client with the subject and body pre-filled. See README for how to
-  // upgrade to true automatic sending via a Supabase Edge Function later.
-  function openEmail() {
-    var t = selectedTarget();
-    if (!t.email) {
-      UI.toast('No email address on file', 'error');
-      return;
-    }
-    var url =
-      'mailto:' + encodeURIComponent(t.email) +
-      '?subject=' + encodeURIComponent(EMAIL_SUBJECT) +
-      '&body=' + encodeURIComponent(EMAIL_BODY);
-    window.location.href = url;
-  }
-
-  function callNumber(phone, who) {
-    if (!phone) {
-      UI.toast('No phone number for ' + who, 'error');
-      return;
-    }
-    window.location.href = UI.telHref(phone);
-  }
-
-  // ---- Load ---------------------------------------------------------------
-  async function load() {
-    var id = getId();
-    if (!id) {
-      showError('No referral was selected. Go back to the dashboard and choose one.');
-      return;
-    }
-    if (!DB.ready) {
-      showError('Supabase isn\u2019t configured. Fill in config.js with your project URL and publishable key.');
-      return;
-    }
-    try {
-      referral = await DB.fetchReferralById(id);
-      if (!referral) {
-        showError('That referral could not be found. It may have been removed.');
-        return;
+  function updateSortIndicators() {
+    var ths = el.thead.querySelectorAll('th.sortable');
+    ths.forEach(function (th) {
+      var ind = th.querySelector('.sort-ind');
+      if (ind) ind.remove();
+      if (th.getAttribute('data-key') === state.sortKey) {
+        var span = document.createElement('span');
+        span.className = 'sort-ind';
+        span.textContent = state.sortDir === 'asc' ? '▲' : '▼';
+        th.appendChild(span);
       }
-      el.loading.hidden = true;
-      el.content.hidden = false;
-      populate();
+    });
+  }
+
+  function render() {
+    var rows = currentView();
+    updateSortIndicators();
+
+    // Count label
+    var total = state.all.length;
+    el.count.textContent =
+      rows.length === total
+        ? total + (total === 1 ? ' referral' : ' referrals')
+        : rows.length + ' of ' + total + ' shown';
+
+    if (total === 0) {
+      hide(el.tableWrap);
+      el.emptyTitle.textContent = 'No referrals yet';
+      el.emptyText.textContent =
+        'When someone submits the referral form, it will appear here.';
+      show(el.empty);
+      return;
+    }
+
+    if (rows.length === 0) {
+      hide(el.tableWrap);
+      el.emptyTitle.textContent = 'No matches';
+      el.emptyText.textContent =
+        'No referrals match your search or filter. Try clearing them.';
+      show(el.empty);
+      return;
+    }
+
+    hide(el.empty);
+    el.tbody.innerHTML = rows.map(rowHtml).join('');
+    show(el.tableWrap);
+  }
+
+  // ---- Referral ID backfill (safety net) --------------------------------
+  // The database trigger assigns codes on insert, so this normally does
+  // nothing. If any legacy row is missing a code, generate one and persist it.
+  async function backfillCodes() {
+    var missing = state.all.filter(function (r) { return !r.referral_code; });
+    for (var i = 0; i < missing.length; i++) {
+      var r = missing[i];
+      var code = DB.generateReferralId(r.created_at);
+      try {
+        var saved = await DB.backfillReferralCode(r.id, code);
+        r.referral_code = saved.referral_code || code;
+      } catch (err) {
+        // If a unique collision or permission issue occurs, show the generated
+        // code locally so the UI still works; it just isn't persisted.
+        r.referral_code = code;
+      }
+    }
+  }
+
+  // ---- Data load ---------------------------------------------------------
+  async function load() {
+    clearError();
+    show(el.loading);
+    hide(el.toolbar);
+    hide(el.tableWrap);
+    hide(el.empty);
+
+    if (!DB.ready) {
+      hide(el.loading);
+      setError(
+        'Supabase isn\u2019t configured. Open config.js and fill in your project ' +
+        'URL and publishable key (the same ones your landing page uses).'
+      );
+      return;
+    }
+
+    try {
+      state.all = await DB.fetchReferrals();
+      await backfillCodes();
+      hide(el.loading);
+      show(el.toolbar);
+      el.updated.textContent =
+        'Updated ' + new Date().toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      render();
     } catch (err) {
+      hide(el.loading);
       var msg = err && err.message ? err.message : 'Unknown error.';
       if (/relation|does not exist|schema cache|column/i.test(msg)) {
-        msg = 'The referrals table isn\u2019t migrated yet. Run supabase/dashboard-migration.sql, then retry.';
-      } else if (/Failed to fetch|NetworkError|ERR_NAME/i.test(msg)) {
-        msg = 'Could not reach Supabase. Check the project URL in config.js and that the project is active.';
+        msg = 'The referrals table isn\u2019t set up for the dashboard yet. Run ' +
+              'supabase/dashboard-migration.sql in the Supabase SQL editor, then retry.';
+      } else if (/Failed to fetch|NetworkError|ERR_NAME_NOT_RESOLVED/i.test(msg)) {
+        msg = 'Could not reach Supabase. Check that the project URL in config.js ' +
+              'is correct and the project is active, then retry.';
+      } else if (/JWT|api key|Invalid/i.test(msg)) {
+        msg = 'The Supabase key was rejected. Confirm the publishable key in ' +
+              'config.js belongs to this project, then retry.';
       }
-      showError(msg);
+      setError(msg);
     }
   }
 
-  // ---- Events -------------------------------------------------------------
-  el.copyCode.addEventListener('click', function () {
-    UI.copy(referral && referral.referral_code, 'Referral ID');
+  // ---- Events ------------------------------------------------------------
+  el.search.addEventListener('input', function (e) {
+    state.search = e.target.value;
+    render();
   });
-  el.callReferrer.addEventListener('click', function () {
-    callNumber(referral && referral.your_phone, 'the referrer');
+  el.filter.addEventListener('change', function (e) {
+    state.status = e.target.value;
+    render();
   });
-  el.callFriend.addEventListener('click', function () {
-    callNumber(referral && referral.friend_phone, 'the referred person');
-  });
-  el.sendEmail.addEventListener('click', openEmail);
-  el.copyEmail.addEventListener('click', function () {
-    UI.copy(selectedTarget().email, 'email');
-  });
-  el.copyPhone.addEventListener('click', function () {
-    UI.copy(selectedTarget().phone, 'phone');
+  el.refresh.addEventListener('click', load);
+  el.errRetry.addEventListener('click', load);
+
+  // Sorting
+  el.thead.addEventListener('click', function (e) {
+    var th = e.target.closest('th.sortable');
+    if (!th) return;
+    var key = th.getAttribute('data-key');
+    if (state.sortKey === key) {
+      state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      state.sortKey = key;
+      state.sortDir = key === 'created_at' ? 'desc' : 'asc';
+    }
+    render();
   });
 
-  el.status.addEventListener('change', async function () {
-    var newStatus = el.status.value;
-    var prev = referral.status;
-    try {
-      var saved = await DB.updateStatus(referral.id, newStatus);
-      referral.status = saved.status;
-      UI.toast('Status updated', 'success');
-    } catch (err) {
-      el.status.value = prev;
-      UI.toast('Could not update status', 'error');
+  // Row interactions (delegated)
+  el.tbody.addEventListener('click', function (e) {
+    // Copy buttons
+    var cb = e.target.closest('.copybtn');
+    if (cb) {
+      e.stopPropagation();
+      UI.copy(cb.getAttribute('data-copy'), cb.getAttribute('data-label'));
+      return;
+    }
+    // Ignore clicks on the interactive controls
+    if (e.target.closest('.status-select') || e.target.closest('.toggle') ||
+        e.target.closest('a')) {
+      return;
+    }
+    // Otherwise open the contact page for this row
+    var tr = e.target.closest('tr.row-clickable');
+    if (tr) {
+      window.location.href = 'contact.html?id=' + encodeURIComponent(tr.getAttribute('data-id'));
     }
   });
 
-  el.saveNotes.addEventListener('click', async function () {
-    var value = el.notes.value;
-    el.saveNotes.disabled = true;
-    var original = el.saveNotes.textContent;
-    el.saveNotes.textContent = 'Saving…';
-    try {
-      var saved = await DB.updateNotes(referral.id, value);
-      referral.notes = saved.notes;
-      UI.toast('Notes saved', 'success');
-    } catch (err) {
-      UI.toast('Could not save notes', 'error');
-    } finally {
-      el.saveNotes.disabled = false;
-      el.saveNotes.textContent = original;
+  // Status change (delegated)
+  el.tbody.addEventListener('change', async function (e) {
+    var target = e.target;
+    var id = target.getAttribute('data-id');
+    var role = target.getAttribute('data-role');
+    if (!id || !role) return;
+
+    if (role === 'status') {
+      var newStatus = target.value;
+      var prev = findLocal(id) ? findLocal(id).status : null;
+      target.className = 'status-select ' + statusClass(newStatus);
+      try {
+        var saved = await DB.updateStatus(id, newStatus);
+        applyLocal(id, saved);
+        UI.toast('Status updated', 'success');
+      } catch (err) {
+        target.value = prev; // revert
+        target.className = 'status-select ' + statusClass(prev);
+        UI.toast('Could not update status', 'error');
+      }
+    }
+
+    if (role === 'sale') {
+      var verified = target.checked;
+      var label = target.parentNode.querySelector('.toggle__label');
+      if (label) label.textContent = verified ? 'Yes' : 'No';
+      try {
+        var savedS = await DB.updateSaleVerified(id, verified);
+        applyLocal(id, savedS);
+        UI.toast(verified ? 'Marked sale verified' : 'Sale verification cleared', 'success');
+      } catch (err) {
+        target.checked = !verified; // revert
+        if (label) label.textContent = !verified ? 'Yes' : 'No';
+        UI.toast('Could not update sale verification', 'error');
+      }
     }
   });
 
+  function findLocal(id) {
+    for (var i = 0; i < state.all.length; i++) {
+      if (String(state.all[i].id) === String(id)) return state.all[i];
+    }
+    return null;
+  }
+  function applyLocal(id, saved) {
+    var r = findLocal(id);
+    if (r && saved) Object.keys(saved).forEach(function (k) { r[k] = saved[k]; });
+  }
+
+  // Go
   load();
 })();
